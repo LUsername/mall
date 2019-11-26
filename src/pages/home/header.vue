@@ -19,8 +19,8 @@ export default {
     @import '~assets/scss/mixins';
     .header{
         &.mine-navbar{
-            // background-color: transparent;
-            background-color: $header-bgc-translucent;
+            background-color: transparent;
+            // background-color: $header-bgc-translucent;
         }
         
         .iconfont{
