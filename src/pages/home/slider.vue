@@ -5,7 +5,9 @@
             :loop="loop"
             :interval="interval"
             :pagination="pagination"
+            v-if="sliders.length"
         >
+        <!-- 添加v-if="sliders.length"避免未获取数据就开始渲染幻灯片组件 -->
             <swiper-slide v-for="(item,index) in sliders" :key="index">
                 <a :href="item.linkUrl" class="slider-link">
                     <img :src="item.picUrl" class="slider-img">
@@ -19,6 +21,7 @@
 import MeSlider from 'base/slider';
 import {swiperSlide} from 'vue-awesome-swiper';
 import {sliderOptions} from './config';
+import {getHomeSlider} from 'api/home';
 export default {
     name:'HomeSlider',
     components:{
@@ -31,23 +34,17 @@ export default {
             loop: sliderOptions.loop,
             interval: sliderOptions.interval,
             pagination: sliderOptions.pagination,
-            sliders:[
-                {
-                 'linkUrl':'https://www.imooc.com',
-                 'picUrl':require('./1.jpg')
-                },
-                {
-                 'linkUrl':'https://www.imooc.com',
-                 'picUrl':require('./2.jpg')
-                },
-                {
-                 'linkUrl':'https://www.imooc.com',
-                 'picUrl':require('./3.jpg')
-                },{
-                 'linkUrl':'https://www.imooc.com',
-                 'picUrl':require('./4.jpg')
-                }
-            ]
+            sliders:[]
+        }
+    },
+    created(){
+        this.getSliders();
+    },
+    methods:{
+        getSliders(){
+            getHomeSlider().then(data => {
+                this.sliders = data;
+            })
         }
     }
 }
