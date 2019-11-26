@@ -9,7 +9,7 @@ const parseParam = param => {
 };
 
 export default (url, data, options) => {
-    url += (url.indexof('?') < 0 ? '?' : '&') + parseParam(data);
+    url += (url.indexOf('?') < 0 ? '?' : '&') + parseParam(data);
     return new Promise((resolve, reject) => {
         jsonp(url, options, (err, data) => {
             if (err) {
