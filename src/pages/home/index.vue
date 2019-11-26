@@ -1,9 +1,9 @@
 <template>
     <div class="home">
         <header class="g-header-container"><home-header></home-header></header>
-        <div>
+        <me-scroll>
             <home-slider />
-        </div>
+        </me-scroll>
         <div class="g-backtop-container"></div>
         <router-view></router-view>
     </div>
@@ -12,11 +12,13 @@
 <script>
 import HomeHeader from './header';
 import HomeSlider from './slider';
+import MeScroll from 'base/scroll';
 export default {
     name:'Home',
     components:{
         HomeHeader,
-        HomeSlider
+        HomeSlider,
+        MeScroll
     }
 }
 </script>
