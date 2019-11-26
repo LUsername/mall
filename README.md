@@ -24,6 +24,7 @@ cnpm install --save vue-awesome-swiper
 异步请求：
 ```
 cnpm install --save axios
+cnpm install --save jsonp
 ```
 
 ## Build Setup
