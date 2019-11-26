@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { SUCC_CODE, TIMEOUT } from './config';
+import jsonp from 'assets/js/jsonp';
 // 获取幻灯片数据 -- ajax
 export const getHomeSlider = () => {
     return axios.get('http://www.imooc.com/api/home/slider', {
