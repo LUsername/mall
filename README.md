@@ -8,12 +8,23 @@
 `分类页`：Header和侧栏、数据获取和显示、客户端缓存<br/>
 `搜索页`:搜索框组件、热门搜索、历史搜素、搜索结果页
 
+
 #### 核心技术栈
 `框架`：Vue<br/>
 `网页布局`：flex布局，结合定位实现布局<br/>
 `轮播插件`：Swiper高效开发轮播特效<br/>
 `数据传递`：template模板化编程/ES6<br/>
 `打包工具`：webpack
+
+#### 项目所使用第三方插件安装命令：
+幻灯片:
+```
+cnpm install --save vue-awesome-swiper
+```
+异步请求：
+```
+cnpm install --save axios
+```
 
 ## Build Setup
 
