@@ -46,6 +46,7 @@ export default {
     },
     data(){
         return{
+            pulling :false,
             pullDownText:PULL_DOWN_TEXT_INIT,
             swiperOption:{
                 direction: 'vertical',
@@ -57,7 +58,8 @@ export default {
                     hide: true
                 },
                 on:{
-                    sliderMove:this.scroll
+                    sliderMove:this.scroll,
+                    touchEnd:this.touchEnd
                 }
             }
         }
@@ -74,6 +76,9 @@ export default {
 
         scroll(){
             const swiper = this.$refs.swiper.swiper;
+            if (this.pulling) {
+                return;
+            }
             if (swiper.translate>0) {   // 下拉
                 if (!this.pullDown) {
                     return;
@@ -84,6 +89,33 @@ export default {
                     this.$refs.pullDownLoading.setText(PULL_DOWN_TEXT_INIT);
                 }
             }
+        },
+        touchEnd(){
+            const swiper = this.$refs.swiper.swiper;
+            if (this.pulling) {
+                return;
+            }
+             if (swiper.translate>0) {   // 下拉
+                if (!this.pullDown) {
+                    return;
+                }
+                this.pulling = true;
+                swiper.allowTouchMove = false;// 禁止触摸
+                swiper.setTransition(swiper.params.speed);
+                swiper.setTranslate(PULL_DOWN_HEIGHT);
+                swiper.params.virtualTranslate = true;// 定住不给回弹
+                this.$refs.pullDownLoading.setText(PULL_DOWN_TEXT_ING);
+                this.$emit('pull-down', this.pullDownEnd);// 触发一个事件
+            }
+        },
+        pullDownEnd(){
+            const swiper = this.$refs.swiper.swiper;
+            this.pulling =false;
+            this.$refs.pullDownLoading.setText(PULL_DOWN_TEXT_END);
+            swiper.params.virtualTranslate = false;
+            swiper.allowTouchMove = true;
+            swiper.setTransition(swiper.params.speed);
+            swiper.setTranslate(0);
         }
     }
 }

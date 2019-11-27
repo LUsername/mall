@@ -1,7 +1,7 @@
 <template>
     <div class="home">
         <header class="g-header-container"><home-header></home-header></header>
-        <me-scroll :data="recommends" pullDown>
+        <me-scroll :data="recommends" pullDown @pull-down="pullToRefresh">
             <home-slider />
             <home-nav />
             <home-recommend @loaded="getRecommends"/>
@@ -35,8 +35,15 @@ export default {
         // updateScroll(){},
         getRecommends(recommends){
             this.recommends = recommends;
+        },
+        pullToRefresh(end){
+            setTimeout(()=>{
+                console.log('下拉刷新');
+                end();
+            },1000);
         }
-    }
+    },
+    
 }
 </script>
 
