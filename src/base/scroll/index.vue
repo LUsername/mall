@@ -1,5 +1,8 @@
 <template>
     <swiper :options="swiperOption" ref="swiper">
+        <div class="mine-scroll-pull-down" v-if="pullDown">
+            <me-loading :text="pullDownText" inline ref="pullDownLoading"/>
+        </div>
         <swiper-slide>
             <slot></slot>
         </swiper-slide>
@@ -8,16 +11,34 @@
 </template>
 <script>
 import {swiper,swiperSlide} from 'vue-awesome-swiper';
+import MeLoading from 'base/loading';
+import {
+  PULL_DOWN_HEIGHT,
+  PULL_DOWN_TEXT_INIT,
+  PULL_DOWN_TEXT_START,
+  PULL_DOWN_TEXT_ING,
+  PULL_DOWN_TEXT_END,
+  PULL_UP_HEIGHT,
+  PULL_UP_TEXT_INIT,
+  PULL_UP_TEXT_START,
+  PULL_UP_TEXT_ING,
+  PULL_UP_TEXT_END
+} from './config';
 export default {
     name:'MeScroll',
     components:{
         swiper,
-        swiperSlide
+        swiperSlide,
+        MeLoading
     },
     props:{
         scrollbar:{
             type:Boolean,
             default:true
+        },
+        pullDown:{
+            type:Boolean,
+            default:false
         },
         data:{
             type:[Array,Object]
@@ -25,6 +46,7 @@ export default {
     },
     data(){
         return{
+            pullDownText:PULL_DOWN_TEXT_INIT,
             swiperOption:{
                 direction: 'vertical',
                 slidesPerView: 'auto',
@@ -33,6 +55,9 @@ export default {
                 scrollbar: {
                     el: this.scrollbar ? '.swiper-scrollbar' : null,
                     hide: true
+                },
+                on:{
+                    sliderMove:this.scroll
                 }
             }
         }
@@ -45,6 +70,20 @@ export default {
     methods:{
         update(){
             this.$refs.swiper && this.$refs.swiper.swiper.update();
+        },
+
+        scroll(){
+            const swiper = this.$refs.swiper.swiper;
+            if (swiper.translate>0) {   // 下拉
+                if (!this.pullDown) {
+                    return;
+                }
+                if (swiper.translate>PULL_DOWN_HEIGHT) {
+                    this.$refs.pullDownLoading.setText(PULL_DOWN_TEXT_START);
+                }else{
+                    this.$refs.pullDownLoading.setText(PULL_DOWN_TEXT_INIT);
+                }
+            }
         }
     }
 }
@@ -57,5 +96,12 @@ export default {
     }
     .swiper-slide{
         height: auto;
+    }
+    .mine-scroll-pull-down{
+        position: absolute;
+        left: 0;
+        bottom: 100%;
+        width: 100%;
+        height: 80px;
     }
 </style>

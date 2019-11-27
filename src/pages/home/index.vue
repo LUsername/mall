@@ -1,7 +1,7 @@
 <template>
     <div class="home">
         <header class="g-header-container"><home-header></home-header></header>
-        <me-scroll :data="recommends">
+        <me-scroll :data="recommends" pullDown>
             <home-slider />
             <home-nav />
             <home-recommend @loaded="getRecommends"/>
