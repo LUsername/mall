@@ -26,6 +26,11 @@ cnpm install --save vue-awesome-swiper
 cnpm install --save axios
 cnpm install --save jsonp
 ```
+懒加载：
+```
+cnpm install --save vue-lazyload
+```
+
 
 ## Build Setup
 
