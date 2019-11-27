@@ -1,10 +1,10 @@
 <template>
     <div class="home">
         <header class="g-header-container"><home-header></home-header></header>
-        <me-scroll>
+        <me-scroll :data="recommends">
             <home-slider />
             <home-nav />
-            <home-recommend />
+            <home-recommend @loaded="getRecommends"/>
         </me-scroll>
         <div class="g-backtop-container"></div>
         <router-view></router-view>
@@ -25,6 +25,17 @@ export default {
         MeScroll,
         HomeNav,
         HomeRecommend
+    },
+    data(){
+        return{
+            recommends:[]
+        }
+    },
+    methods:{
+        // updateScroll(){},
+        getRecommends(recommends){
+            this.recommends = recommends;
+        }
     }
 }
 </script>

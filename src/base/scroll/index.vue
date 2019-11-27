@@ -1,5 +1,5 @@
 <template>
-    <swiper :options="swiperOption">
+    <swiper :options="swiperOption" ref="swiper">
         <swiper-slide>
             <slot></slot>
         </swiper-slide>
@@ -18,6 +18,9 @@ export default {
         scrollbar:{
             type:Boolean,
             default:true
+        },
+        data:{
+            type:[Array,Object]
         }
     },
     data(){
@@ -32,6 +35,16 @@ export default {
                     hide: true
                 }
             }
+        }
+    },
+    watch:{
+        data(){
+            this.update();
+        }
+    },
+    methods:{
+        update(){
+            this.$refs.swiper && this.$refs.swiper.swiper.update();
         }
     }
 }
