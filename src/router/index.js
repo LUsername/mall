@@ -11,6 +11,7 @@ Vue.use(Router);
 const routes = [{
         name: 'home',
         path: '/home',
+        // component:home 改为路由的懒加载如下
         component: () =>
             import ('pages/home'),
         children: [{

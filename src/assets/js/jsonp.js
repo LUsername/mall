@@ -1,11 +1,22 @@
 import jsonp from 'jsonp';
 
+/**
+ * 将类似以下对象：
+ * {
+ *     page:1,
+ *     psize:20
+ * }
+ * 转换成：
+ *   page=1&psize=20
+ */
 const parseParam = param => {
     let params = [];
     for (const key in param) {
         params.push([key, param[key]]);
+        // [[page,1],[psize,20]]
     }
     return params.map(value => value.join('=')).join('&');
+    // [page=1,psize=20]
 };
 
 export default (url, data, options) => {

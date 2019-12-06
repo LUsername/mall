@@ -27,7 +27,7 @@
 
 <style lang="scss" scoped>
   @import '~assets/scss/mixins';
-  .link-active-color{
+  .router-link-active{
     color: $link-active-color;
   }
 </style>

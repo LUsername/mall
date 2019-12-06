@@ -1,5 +1,5 @@
 <template>
-    <swiper :options="swiperOption">
+    <swiper :options="swiperOption" :key="keyId">
         <slot></slot>
         <div class="swiper-pagination" v-if="pagination" slot="pagination"></div>
     </swiper>
@@ -36,10 +36,17 @@ export default {
         pagination:{
             type:Boolean,
             default:true
+        },
+        data:{
+            type:Array,
+            default(){
+                return [];
+            }
         }
     },
     data(){
         return{
+            keyId:Math.random(),
             swiperOption:{
                 watchOverflow: true,    // 只有1个slide（非loop），swiper会失效且隐藏导航等
                 direction: this.direction,
@@ -54,6 +61,14 @@ export default {
                 }
             }
         };
+    },
+    watch:{
+        data(newData){
+            if (newData.length === 0) {
+                return;
+            }
+            this.keyId = Math.random();
+        }
     }
 }
 </script>
