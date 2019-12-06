@@ -6,6 +6,9 @@
         <swiper-slide>
             <slot></slot>
         </swiper-slide>
+        <div class="mine-scroll-pull-up" v-if="pullUp">
+            <me-loading :text="pullUpText" inline ref="pullUpLoading"/>
+        </div>
         <div class="swiper-scrollbar" v-if="scrollbar" slot="scrollbar"></div>
     </swiper>
 </template>
@@ -40,6 +43,10 @@ export default {
             type:Boolean,
             default:false
         },
+        pullUp:{
+            type:Boolean,
+            default:false
+        },
         data:{
             type:[Array,Object]
         }
@@ -48,6 +55,7 @@ export default {
         return{
             pulling :false,
             pullDownText:PULL_DOWN_TEXT_INIT,
+            pullUpText:PULL_UP_TEXT_INIT,
             swiperOption:{
                 direction: 'vertical',
                 slidesPerView: 'auto',
@@ -88,6 +96,16 @@ export default {
                 }else{
                     this.$refs.pullDownLoading.setText(PULL_DOWN_TEXT_INIT);
                 }
+            }else if (swiper.isEnd) {   // 底部
+                if (!this.pullUp) {
+                    return;
+                }
+                const isPullUp = Math.abs(swiper.translate) + swiper.height - PULL_UP_HEIGHT > parseInt(swiper.$wrapperEl.css('height'));
+                if (isPullUp) {
+                  this.$refs.pullUpLoading.setText(PULL_UP_TEXT_START);
+                } else {
+                  this.$refs.pullUpLoading.setText(PULL_UP_TEXT_INIT);
+                }
             }
         },
         touchEnd(){
@@ -106,6 +124,21 @@ export default {
                 swiper.params.virtualTranslate = true;// 定住不给回弹
                 this.$refs.pullDownLoading.setText(PULL_DOWN_TEXT_ING);
                 this.$emit('pull-down', this.pullDownEnd);// 触发一个事件
+            }else if (swiper.isEnd) { // 底部
+                const totalHeight = parseInt(swiper.$wrapperEl.css('height'));
+                const isPullUp = Math.abs(swiper.translate) + swiper.height - PULL_UP_HEIGHT > totalHeight;
+                if (isPullUp) { // 上拉
+                  if (!this.pullUp) {
+                    return;
+                  }
+                  this.pulling = true;
+                  swiper.allowTouchMove = false; // 禁止触摸
+                  swiper.setTransition(swiper.params.speed);
+                  swiper.setTranslate(-(totalHeight + PULL_UP_HEIGHT - swiper.height));
+                  swiper.params.virtualTranslate = true; // 定住不给回弹
+                  this.$refs.pullUpLoading.setText(PULL_UP_TEXT_ING);
+                  this.$emit('pull-up', this.pullUpEnd);
+                }
             }
         },
         pullDownEnd(){
@@ -116,6 +149,13 @@ export default {
             swiper.allowTouchMove = true;
             swiper.setTransition(swiper.params.speed);
             swiper.setTranslate(0);
+        },
+        pullUpEnd() {
+          const swiper = this.$refs.swiper.swiper;
+          this.pulling = false;
+          this.$refs.pullUpLoading.setText(PULL_UP_TEXT_END);
+          swiper.params.virtualTranslate = false;
+          swiper.allowTouchMove = true;
         }
     }
 }
@@ -129,11 +169,19 @@ export default {
     .swiper-slide{
         height: auto;
     }
+    .mine-scroll-pull-up,
     .mine-scroll-pull-down{
         position: absolute;
         left: 0;
-        bottom: 100%;
         width: 100%;
+    }
+    .mine-scroll-pull-down {
+        bottom: 100%;
         height: 80px;
+    }
+
+    .mine-scroll-pull-up {
+        top: 100%;
+        height: 30px;
     }
 </style>

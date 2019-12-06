@@ -1,10 +1,16 @@
 <template>
     <div class="home">
         <header class="g-header-container"><home-header></home-header></header>
-        <me-scroll :data="recommends" pullDown @pull-down="pullToRefresh">
+        <me-scroll 
+            :data="recommends" 
+            pullDown 
+            @pull-down="pullToRefresh"
+            pullUp
+            @pull-up="pullToLoadMore"
+        >
             <home-slider ref="slider"/>
             <home-nav />
-            <home-recommend @loaded="getRecommends"/>
+            <home-recommend @loaded="getRecommends" ref="recommend"/>
         </me-scroll>
         <div class="g-backtop-container"></div>
         <router-view></router-view>
@@ -42,6 +48,17 @@ export default {
             //     console.log('下拉刷新');
             //     end();
             // },1000);
+        },
+        pullToLoadMore(end){
+            this.$refs.recommend.update().then(end).catch(err => {
+                if (err) {
+                    console.log(err);
+                }
+                end();
+                // 处理没有更多数据的情况
+                // 禁止继续加载更多数据
+                // 替换上拉时的loading，改为没有更多数据了
+            });
         }
     },
     
