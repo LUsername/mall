@@ -53,10 +53,23 @@ export default {
     },
     data(){
         return{
-            pulling :false,
-            pullDownText:PULL_DOWN_TEXT_INIT,
-            pullUpText:PULL_UP_TEXT_INIT,
-            swiperOption:{
+            
+        }
+    },
+    watch:{
+        data(){
+            this.update();
+        }
+    },
+    created(){
+        this.init();
+    },
+    methods:{
+        init(){
+            this.pulling = false;
+            this.pullDownText = PULL_DOWN_TEXT_INIT;
+            this.pullUpText = PULL_UP_TEXT_INIT;
+            this.swiperOption = {
                 direction: 'vertical',
                 slidesPerView: 'auto',
                 freeMode: true,
@@ -67,23 +80,23 @@ export default {
                 },
                 on:{
                     sliderMove:this.scroll,
-                    touchEnd:this.touchEnd
+                    touchEnd:this.touchEnd,
+                    transitionEnd:this.scrollEnd
                 }
-            }
-        }
-    },
-    watch:{
-        data(){
-            this.update();
-        }
-    },
-    methods:{
+            };
+        },
+
+        scrollToTop(speed,runCallbacks){
+            this.$refs.swiper && this.$refs.swiper.swiper.sliderTo(0,speed,runCallbacks);
+        },
+
         update(){
             this.$refs.swiper && this.$refs.swiper.swiper.update();
         },
 
         scroll(){
             const swiper = this.$refs.swiper.swiper;
+            this.$emit('scroll',swiper.translate,this.$refs.swiper.swiper);
             if (this.pulling) {
                 return;
             }
@@ -107,6 +120,9 @@ export default {
                   this.$refs.pullUpLoading.setText(PULL_UP_TEXT_INIT);
                 }
             }
+        },
+        scrollEnd(){
+            this.$emit('scroll-end',this.$refs.swiper.swiper.translate,this.$refs.swiper.swiper);
         },
         touchEnd(){
             const swiper = this.$refs.swiper.swiper;
@@ -149,6 +165,9 @@ export default {
             swiper.allowTouchMove = true;
             swiper.setTransition(swiper.params.speed);
             swiper.setTranslate(0);
+            setTimeout(()=>{
+                this.$emit('pull-down-transition-end');
+            },swiper.params.speed);
         },
         pullUpEnd() {
           const swiper = this.$refs.swiper.swiper;
