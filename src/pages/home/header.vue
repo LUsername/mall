@@ -1,5 +1,5 @@
 <template>
-    <me-navbar class="header">
+    <me-navbar class="header" v-show="visible">
         <i class="iconfont icon-scan" slot="left"></i>
         <div slot="center">搜索框</div>
         <i class="iconfont icon-msg" slot="right"></i>
@@ -12,6 +12,19 @@ export default {
     name:'HomeHeader',
     components:{
         MeNavbar
+    },
+    data(){
+        return{
+            visible:true
+        }
+    },
+    methods:{
+        show(){
+            this.visible = true;
+        },
+        hide(){
+            this.visible = false;
+        }
     }
 };
 </script>
@@ -20,13 +33,17 @@ export default {
     .header{
         &.mine-navbar{
             background-color: transparent;
-            // background-color: $header-bgc-translucent;
+            transition: background-color 0.5s;
         }
         
+        &.header-transition{
+            background-color: $header-bgc-translucent;
+        }
+
         .iconfont{
         color: $icon-color-default;
         font-size: $icon-font-size;
-    }
+        }
     }
 
 </style>

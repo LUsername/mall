@@ -1,6 +1,8 @@
 <template>
     <div class="home">
-        <header class="g-header-container"><home-header></home-header></header>
+        <header class="g-header-container">
+            <home-header :class="{'header-transition':isHeaderTransition}" ref="header"/>
+        </header>
         <me-scroll 
             :data="recommends" 
             pullDown 
@@ -8,6 +10,8 @@
             pullUp
             @pull-up="pullToLoadMore"
             @scroll-end='scrollEnd'
+            @scroll="scroll"
+            @pull-down-transition-end="pullDownTransitionEnd"
             ref="scroll"
         >
             <home-slider ref="slider"/>
@@ -28,6 +32,7 @@ import MeScroll from 'base/scroll';
 import MeBacktop from 'base/backtop';
 import HomeNav from './nav';
 import HomeRecommend from './recommend';
+import {HEADER_TRANSITION_HEIGHT} from './config';
 export default {
     name:'Home',
     components:{
@@ -41,7 +46,8 @@ export default {
     data(){
         return{
             recommends:[],
-            isBacktopVisible:false
+            isBacktopVisible:false,
+            isHeaderTransition:false
         }
     },
     methods:{
@@ -67,12 +73,32 @@ export default {
                 // 替换上拉时的loading，改为没有更多数据了
             });
         },
-        scrollEnd(translate,scroll){
+        scroll(translate){
+            this.changeHeaderStatus(translate);
+        },
+        scrollEnd(translate,scroll,pulling){
+            if (!pulling) {
+                this.changeHeaderStatus(translate);
+            }
             this.isBacktopVisible = translate < 0 && -translate > scroll.height;
+            
+        },
+        pullDownTransitionEnd() {
+            this.$refs.header.show();
         },
         backToTop() {
-        this.$refs.scroll && this.$refs.scroll.scrollToTop();
-      },
+            this.$refs.scroll && this.$refs.scroll.scrollToTop();
+        },
+        changeHeaderStatus(translate) {
+            if (translate > 0) {
+              this.$refs.header.hide();
+              return;
+            }
+
+            this.$refs.header.show();
+
+            this.isHeaderTransition = -translate > HEADER_TRANSITION_HEIGHT;
+        }
     },
     
 }

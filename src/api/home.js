@@ -39,12 +39,6 @@ export const getHomeSlider = () => {
             linkUrl: 'https://www.imooc.com',
             picUrl: require('assets/img/404.png')
         }];
-    }).then(data => {
-        return new Promise(resolve => {
-            setTimeout(() => {
-                resolve(data);
-            }, 1000);
-        })
     });
 };
 
@@ -68,11 +62,5 @@ export const getHomeRecommend = (page = 1, psize = HOME_RECOMMEND_PAGE_SIZE) => 
         if (err) {
             console.log(err);
         }
-    }).then(res => {
-        return new Promise(resolve => {
-            setTimeout(() => {
-                resolve(res);
-            }, 1000);
-        });
     });
 };
