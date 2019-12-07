@@ -1,9 +1,6 @@
 <template>
-  <div>
-    content
-  </div>
-  <!-- <div class="content-wrapper">
-    <div class="loading-container">
+  <div class="content-wrapper">
+    <div class="loading-container" v-if="isLoading">
       <me-loading/> 
       <div class="loading-wrapper">
         <me-loading/>
@@ -11,38 +8,45 @@
     </div>
     <me-scroll ref="scroll">
       <div class="content">
-        <div class="pic">
-          <a href="" class="pic-link">
-            <img src="" alt="" class="pic-img">
+        <div class="pic" v-if="content.banner">
+          <a :href="content.banner.linkUrl" class="pic-link">
+            <img @load="updateScroll" :src="content.banner.picUrl" alt="" class="pic-img">
           </a>
         </div>
-        <div class="section">
-          <h4 class="section-title"></h4>
+        <div 
+          class="section"
+          v-for="(section,index) in content.data"
+          :key="index"
+        >
+          <h4 class="section-title">{{section.name}}</h4>
           <ul class="section-list">
             <li
-              class="section-item">
-              <a href="" class="section-link">
-                <p class="section-pic">
-                  <img src="" alt="" class="section-img" />
+              class="section-item"
+              v-for="(item,i) in section.itemList"
+              :key="i"
+            >
+              <a :href="item.linkUrl" class="section-link">
+                <p class="section-pic" v-if="item.picUrl">
+                  <img v-lazy="item.picUrl" alt="" class="section-img" />
                 </p>
-                <p class="section-name"></p>
+                <p class="section-name">{{item.name}}</p>
               </a>
             </li>
           </ul>
         </div>
       </div>
     </me-scroll>
-    <div class="g-backtop-container">
+    <!-- <div class="g-backtop-container">
       <me-backtop @backtop="backToTop" visible="isBacktopVisible"/>
-    </div>
-  </div>-->
+    </div> -->
+  </div>
 </template>
 
 <script>
   import MeLoading from 'base/loading';
   import MeScroll from 'base/scroll';
   import MeBacktop from 'base/backtop';
-  // import {getCategoryContent} from 'api/category';
+  import {getCategoryContent} from 'api/category';
   // import storage from 'assets/js/storage';
   // import {CATEGORY_CONTENT_KEY, CATEGORY_CONTENT_UPDATE_TIME_INTERVAL} from './config';
 
@@ -53,14 +57,41 @@
       MeScroll,
       MeBacktop
     },
+    props:{
+      curId:{
+        type:String,
+        default:''
+      }
+    },
      data() {
       return {
-        isBacktopVisible: false        
+        content:{},
+        isBacktopVisible: false,
+        isLoading:true        
       };
     },
+    watch:{
+      curId(id){
+        this.isLoading = true;
+        this.getContent(id).then(()=>{
+          this.isLoading = false;
+          this.backToTop(0);
+        });
+      }
+    },
     methods: {
-      backToTop() {
-        this.$refs.scroll && this.$refs.scroll.scrollToTop();
+      getContent(id){
+        return getCategoryContent(id).then(data=>{
+          if (data) {
+            this.content = data;
+          }
+        });
+      },
+      backToTop(speend) {
+        this.$refs.scroll && this.$refs.scroll.scrollToTop(speend);
+      },
+      updateScroll(){
+        this.$refs.scroll && this.$refs.scroll.update();
       }
     }  
   };
