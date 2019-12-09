@@ -51,6 +51,7 @@
 
   .g-content-container {
     display: flex;
+    height: 100%;
   }
   .sidebar {
     width: 80px;
